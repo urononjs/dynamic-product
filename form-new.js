@@ -26,13 +26,7 @@ $(document).ready(function() {
     $('input[name="przm-age[]"]').prop('checked', false)
 });
 
-
-
-
-
-
 $(document).on('submit', '.przm-form', function(e) {
-
     //блокируем кнопку регистрации для исключения повторного нажатия
     $("input[type=submit]").attr("disabled", "disabled");
 
@@ -40,29 +34,29 @@ $(document).on('submit', '.przm-form', function(e) {
     var form = $(this);
     var data = [];
     var fieldName, fieldNameParts, field, value, fieldValue, fieldAtribute, fieldType;
-    var date1 = document.querySelector("#date1");
+    var age = document.querySelector("#age");
     var msgEmail = 'Введено некоректний E-mail';
-    var valuedate1 = date1.value;
-    var min = parseInt(date1.getAttribute("min")) || min;
+    var valueage = age.value;
+    var min = parseInt(age.getAttribute("min")) || min;
     var today = new Date().getFullYear();
-    date1.style.background = "#fff";
-    date1.style.color = "#000";
-    if (valuedate1 < min) {
-        date1.style.background = "#ff9f9f";
-        date1.style.color = "#fff";
+    age.style.background = "#fff";
+    age.style.color = "#000";
+    if (valueage < min) {
+        age.style.background = "#ff9f9f";
+        age.style.color = "#fff";
         $.fancybox.open('<div class="przm-form-errors success">' + 'Мінімальний рік ' + min + '</div>');
         $("input[type=submit]").attr("disabled", false);
         return false;
     };
-    if (valuedate1 > today) {
-        date1.style.background = "#ff9f9f";
-        date1.style.color = "#fff";
+    if (valueage > today) {
+        age.style.background = "#ff9f9f";
+        age.style.color = "#fff";
         alert(`Мaксимальний рік ${today}`);
         $("input[type=submit]").attr("disabled", false);
         return false;
     };
-    var newAge = today - valuedate1;
-    valuedate1 = '01.01.' + valuedate1;
+    var newAge = today - valueage;
+    valueage = '01.01.' + valueage;
     if($('input[name="przm-email"]').val() !== ''){
         var regex = RegExp(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{0,}))$/);
         var regExp = regex.test($('input[name="przm-email"]').val());
@@ -94,7 +88,7 @@ $(document).on('submit', '.przm-form', function(e) {
             } else if(fieldNameParts[1] == 'age'){
                 data.push({
                     name: fieldNameParts[1],
-                    value: valuedate1
+                    value: valueage
                 });
             } else{
                 data.push({
