@@ -1,0 +1,17 @@
+@font-face {
+   font-family:HeliosCondC;
+   font-display: auto;
+   src:url(fonts/HeliosCondC.otf);
+}
+@font-face {
+    font-family:Adamantc;
+    font-display: auto;
+    src:url(fonts/AdamantC.otf);
+ }
+ @font-face {
+   font-family:RobotoCondensed-Regular;
+   font-display: auto;
+   src:url(fonts/RobotoCondensed-Regular.ttf);
+}
+
+
