@@ -33,35 +33,22 @@ $(document).on('submit', '.przm-form', function(e) {
     e.preventDefault();
     var form = $(this);
     var data = [];
-    var fieldName, fieldNameParts, field, value, fieldValue, fieldAtribute, fieldType;
-    var age = document.querySelector("#age");
-    var msgEmail = 'Введено некоректний E-mail';
-    var valueage = age.value;
-    var min = parseInt(age.getAttribute("min")) || min;
+    var field, value, fieldValue;
+
+
+    var ageHtmlElement = document.querySelector("#age");
+    let ageValue = ageHtmlElement.value;
     var today = new Date().getFullYear();
-    age.style.background = "#fff";
-    age.style.color = "#000";
-    if (valueage < min) {
-        age.style.background = "#ff9f9f";
-        age.style.color = "#fff";
-        $.fancybox.open('<div class="przm-form-errors success">' + 'Мінімальний рік ' + min + '</div>');
-        $("input[type=submit]").attr("disabled", false);
-        return false;
-    };
-    if (valueage > today) {
-        age.style.background = "#ff9f9f";
-        age.style.color = "#fff";
-        alert(`Мaксимальний рік ${today}`);
-        $("input[type=submit]").attr("disabled", false);
-        return false;
-    };
-    var newAge = today - valueage;
-    valueage = '01.01.' + valueage;
+    ageHtmlElement.style.background = "#fff";
+    ageHtmlElement.style.color = "#000";
+
+    var newAge = today - ageValue;
+    ageValue = '01.01.' + ageValue;
     if($('input[name="przm-email"]').val() !== ''){
         var regex = RegExp(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{0,}))$/);
         var regExp = regex.test($('input[name="przm-email"]').val());
         if(!regExp){
-            $.fancybox.open('<div class="przm-form-errors success">' + msgEmail + '</div>');
+            $.fancybox.open('<div class="przm-form-errors success">Введено некоректний E-mail</div>');
 
             $("input[type=submit]").attr("disabled", false);
             return false;
@@ -76,41 +63,50 @@ $(document).on('submit', '.przm-form', function(e) {
     var errors = [];
     var message = 'Заповніть поля:';
     form.find('.przm-form-control').each(function() {
-        fieldName = $(this).attr('name');
-        fieldType = $(this).attr('type');
+        let fieldName = $(this).attr('name');
+        const fieldPlaceholder = this.getAttribute("placeholder");
+        
+        if((fieldName !== undefined) && (fieldName.indexOf('przm-') == 0)) {
+            fieldName = fieldName.substr('przm-'.length);
 
-        fieldValue = this.value;
-        fieldAtribute = this.getAttribute("placeholder");
-        if((fieldName !== undefined) && (fieldName.indexOf('przm') == 0)) {
-            fieldNameParts = fieldName.split('-');
-            if(fieldNameParts[1] !== undefined && fieldValue == '' && fieldNameParts[1] !== 'email' && fieldAtribute !== null) {
-                errors.push(" "+fieldAtribute);
-            } else if(fieldNameParts[1] == 'age'){
-                data.push({
-                    name: fieldNameParts[1],
-                    value: valueage
-                });
+            if(fieldName == 'age') {
+                // start validate age field
+                const min = parseInt(ageHtmlElement.getAttribute("min")) || min;
+                if (ageHtmlElement.value < min) {
+                    ageHtmlElement.style.background = "#ff9f9f";
+                    ageHtmlElement.style.color = "#fff";
+                    errors.push(" "+'Мінімальний рік ' + min);
+                }else if (ageHtmlElement.value > today) {
+                    ageHtmlElement.style.background = "#ff9f9f";
+                    ageHtmlElement.style.color = "#fff";
+                    errors.push(" "+ `Мaксимальний рік ${today}`);
+                } else {
+                    data.push({
+                        name: fieldName,
+                        value: ageValue
+                    });
+                }
+                // end validate age field
+            } else if(this.value == '' && fieldName !== 'email' && fieldPlaceholder !== null) {
+                errors.push(" "+fieldPlaceholder);
             } else{
                 data.push({
-                    name: fieldNameParts[1],
+                    name: fieldName,
                     value: $(this).val()
                 });
             }
         };
 
-        if(fieldType == "checkbox" && fieldNameParts[1] == "agree"){
+        const fieldType = $(this).attr('type');
+        if(fieldType == "checkbox" && fieldName == "agree"){
             if(!$(this).prop("checked")){
                 errors.push(" Необхідна Ваша згода на умови Акції");
             }
         }
-
-
     });
 
     if( errors.length )	{
-
         $.fancybox.open('<div class="przm-form-errors success">' + message + ' ' + errors + '</div>');
-
         $("input[type=submit]").attr("disabled", false);
         return false;
     };
